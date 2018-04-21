@@ -1251,6 +1251,8 @@ displayEntityStruct& DungeonMapEntity::generateBlood(float x, float y, BaseCreat
   return blood[blood.size() - 1];
 }
 
+
+
 displayEntityStruct& DungeonMapEntity::generateBoltParticle(float x, float y, Vector2D velocity, bool back, int frame, float scale, float lifetime)
 {
   displayEntityStruct partEntity;
@@ -1267,8 +1269,13 @@ displayEntityStruct& DungeonMapEntity::generateBoltParticle(float x, float y, Ve
   partEntity.age = 0;
   partEntity.color = sf::Color::White;
 
+  boltParticles.push_back(partEntity);
+
+  //THIS SHIT DONT WORK
+  /*
   if (back) backBoltParticles.push_back(partEntity);
   else boltParticles.push_back(partEntity);
+  */
 
   return boltParticles[boltParticles.size() - 1];
 }
