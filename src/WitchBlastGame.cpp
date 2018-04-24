@@ -325,7 +325,7 @@ WitchBlastGame::WitchBlastGame()
     "media/interface.png",     "media/hud_shots.png",
     "media/explosion.png",     "media/keys_qwer.png",
     "media/keys_azer.png",
-    "media/night.png",         "media/title.png",
+    "media/school.png",         "media/title.png",
     "media/overlay_00.png",    "media/light_cone.png",
     "media/divinity.png",
     "media/pnj.png",           "media/fairy.png",
