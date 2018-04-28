@@ -334,7 +334,7 @@ WitchBlastGame::WitchBlastGame()
     "media/ui_spells.png",        "media/ui_message.png",
     "media/ui_top_layer.png",     "media/ui_achiev.png",
     "media/fog.png",              "media/title_animation.png",
-    "media/splatter.png",         "media/witch_intro.png",
+    "media/splatter.png",         "media/character_intro.png",
     "media/item_description.png", "media/death_certificate.png",
     "media/achievements.png",     "media/boss_pictures.png",
     "media/portrait_part.png",    "media/dungeon_random.png",
@@ -3594,7 +3594,7 @@ void WitchBlastGame::renderMenu()
   }
 
   std::ostringstream oss;
-  oss << APP_NAME << " v" << APP_VERSION << "  - 2014-2015 - " << " Seby (code), Pierre \"dejam0rt\" Baron (2D art)";
+  oss << APP_NAME << " v" << APP_VERSION << "  - 2018 - " << " BY: Sunny To, Gustavo Vazquez, Smit Patel";
   write(oss.str(), 17, 5, 680, ALIGN_LEFT, sf::Color(255, 255, 255, 255), app, 1, 1, 0);
 }
 
@@ -3696,37 +3696,37 @@ void WitchBlastGame::renderCredits()
   int yStep = 30;
   int xLeft = 30;
   int xRight = 470;
-  int xMarging = 20;
+  int xMarging = 10;
 
   int yCursor = yCursorInit;
-  write("Code", 22, xLeft, yCursor, ALIGN_LEFT, sf::Color(210, 210, 255, 255), app, 0, 0, 0);
+  write("Code", 22, xLeft, yCursor, ALIGN_LEFT, sf::Color(51, 51, 255, 255), app, 0, 0, 0);
   yCursor += yStep;
   int i = 0;
   while (creditsCode[i] != "END")
   {
-    write(creditsCode[i], 19, xLeft + xMarging, yCursor, ALIGN_LEFT, sf::Color(255, 255, 255, 255), app, 0, 0, 0);
+    write(creditsCode[i], 19, xLeft + xMarging, yCursor, ALIGN_LEFT, sf::Color(32, 32, 32, 255), app, 0, 0, 0);
     yCursor += yStep;
     i++;
   }
   yCursor += yStep;
 
-  write("2D Art", 22, xLeft, yCursor, ALIGN_LEFT, sf::Color(210, 210, 255, 255), app, 0, 0, 0);
+  write("2D Art", 22, xLeft, yCursor, ALIGN_LEFT, sf::Color(51, 51, 255, 255), app, 0, 0, 0);
   yCursor += yStep;
   i = 0;
   while (credits2D[i] != "END")
   {
-    write(credits2D[i], 19, xLeft + xMarging, yCursor, ALIGN_LEFT, sf::Color(255, 255, 255, 255), app, 0, 0, 0);
+    write(credits2D[i], 19, xLeft + xMarging, yCursor, ALIGN_LEFT, sf::Color(32, 32, 32, 255), app, 0, 0, 0);
     yCursor += yStep;
     i++;
   }
   yCursor += yStep;
 
-  write("Sound", 22, xLeft, yCursor, ALIGN_LEFT, sf::Color(210, 210, 255, 255), app, 0, 0, 0);
+  write("Sound", 22, xLeft, yCursor, ALIGN_LEFT, sf::Color(51, 51, 255, 255), app, 0, 0, 0);
   yCursor += yStep;
   i = 0;
   while (creditsSound[i] != "END")
   {
-    write(creditsSound[i], 19, xLeft + xMarging, yCursor, ALIGN_LEFT, sf::Color(255, 255, 255, 255), app, 0, 0, 0);
+    write(creditsSound[i], 19, xLeft + xMarging, yCursor, ALIGN_LEFT, sf::Color(32, 32, 32, 255), app, 0, 0, 0);
     yCursor += yStep;
     i++;
   }
@@ -3735,26 +3735,26 @@ void WitchBlastGame::renderCredits()
 
   ////// RIGHT
 
-  yCursor = yCursorInit + yStep;
-  write("Music", 22, xRight, yCursor, ALIGN_LEFT, sf::Color(210, 210, 255, 255), app, 0, 0, 0);
+  yCursor = yCursorInit;
+  write("Music", 22, xRight, yCursor, ALIGN_LEFT, sf::Color(51, 51, 255, 255), app, 0, 0, 0);
   yCursor += yStep;
   i = 0;
   while (creditsMusic[i] != "END")
   {
-    write(creditsMusic[i], 19, xRight + xMarging, yCursor, ALIGN_LEFT, sf::Color(255, 255, 255, 255), app, 0, 0, 0);
+    write(creditsMusic[i], 19, xRight + xMarging, yCursor, ALIGN_LEFT, sf::Color(32, 32, 32, 255), app, 0, 0, 0);
     yCursor += yStep;
     i++;
   }
   yCursor += yStep;
 
-  write("Translation", 22, xRight, yCursor, ALIGN_LEFT, sf::Color(210, 210, 255, 255), app, 0, 0, 0);
+  write("Original Code", 22, xRight, yCursor, ALIGN_LEFT, sf::Color(51, 51, 255, 255), app, 0, 0, 0);
   yCursor += yStep;
   i = 0;
-  while (creditsTranslate[i] != "END")
+  while (creditsOriginalCode[i] != "END")
   {
-    write(creditsTranslate[i], 19, xRight + xMarging, yCursor, ALIGN_LEFT, sf::Color(255, 255, 255, 255), app, 0, 0, 0);
-    yCursor += yStep;
-    i++;
+	  write(creditsOriginalCode[i], 19, xRight + xMarging, yCursor, ALIGN_LEFT, sf::Color(32, 32, 32, 255), app, 0, 0, 0);
+	  yCursor += yStep;
+	  i++;
   }
   yCursor += yStep;
 }
@@ -5544,7 +5544,7 @@ void WitchBlastGame::playMusic(musicEnum musicChoice)
 
       switch (r)
       {
-        case 0: ok = music.openFromFile("media/sound/WitchBlastTheme.ogg"); break;
+        case 0: ok = music.openFromFile("media/sound/magic_clock_shop.ogg"); break;
         case 1: ok = music.openFromFile("media/sound/SavageLife.ogg"); break;
         case 2: ok = music.openFromFile("media/sound/HauntedLighthouse.ogg"); break;
       }
@@ -5566,7 +5566,7 @@ void WitchBlastGame::playMusic(musicEnum musicChoice)
     break;
 
   case MusicIntro:
-    ok = music.openFromFile("media/sound/WitchBlastTheme.ogg");
+    ok = music.openFromFile("media/sound/magic_clock_shop.ogg");
     break;
   }
 
