@@ -78,35 +78,33 @@ const int NB_PLAYERS_MAX = 2;
 /** Credits: coder */
 const std::string creditsCode[]  =
 {
-  "Seby",
+  "Sunny To",
+  "Gustavo Vazquez",
+  "Smit Patel",
   "END"
 };
 /** Credits: 2D artists */
 const std::string credits2D[]  =
 {
-  "Pierre \"dejam0rt\" Baron",
+  "Gustavo Vazquez",
   "END"
 };
 /** Credits: Sound */
 const std::string creditsSound[]  =
 {
   "www.freesound.org/",
-  "www.freesfx.co.uk/",
-  "www.universal-soundbank.com/",
   "END"
 };
 /** Credits: Music */
 const std::string creditsMusic[]  =
 {
-  "Le Guitariste Du Nord",
+  "www.soundimage.org/",
   "END"
 };
-/** Credits: Translation */
-const std::string creditsTranslate[]  =
+/** Credits: Original Code */
+const std::string creditsOriginalCode[] =
 {
-  "achpile (russian)",
-  "AFS (spanish)",
-  "Geheim (german)",
+  "https://github.com/Cirrus-Minor/witchblast/",
   "END"
 };
 
