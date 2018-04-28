@@ -3,10 +3,9 @@ Change game sprites (School theme)
 change game name to DANK SMIT
 (Smit is a slave)
 
-implement enemy to randomly teleport
-implement invincibility
-implement enemy to move and bounce around
-implement 
+~~implement enemy to randomly teleport~~ Already given to vampire ability
+~~implement invincibility~~ (Perhaps as a pickup item or cooldown on spell.
+~~implement enemy to move and bounce around (of walls)~~
 
 implement melee
 implement corner shots (NE, NW, SE, SW)
