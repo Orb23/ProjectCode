@@ -6,7 +6,7 @@ change game name to DANK SMIT
 ~~implement enemy to randomly teleport~~ 
       Already given to vampire ability
 ~~implement invincibility~~ 
-      (Perhaps as a pickup item or cooldown on spell.
+      Perhaps as a pickup item or cooldown on spell.
 ~~implement enemy to move and bounce around (of walls)~~
     Eyeball object already has this effect.
 
