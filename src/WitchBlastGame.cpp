@@ -397,7 +397,7 @@ WitchBlastGame::WitchBlastGame()
     "media/sound/message.ogg",        "media/sound/earthquake.ogg",
     "media/sound/spell_freeze.ogg",   "media/sound/spell_shield.ogg",
     "media/sound/heavy_step_00.ogg",  "media/sound/heavy_step_01.ogg",
-    "media/sound/night.ogg",          "media/sound/grumble.ogg",
+    "media/sound/school_bell.ogg",          "media/sound/grumble.ogg",
     "media/sound/zombie_00.ogg",      "media/sound/zombie_01.ogg",
     "media/sound/zombie_attack.ogg",  "media/sound/zombie_die.ogg",
     "media/sound/ghost.ogg",          "media/sound/ghost_die.ogg",
@@ -5545,8 +5545,8 @@ void WitchBlastGame::playMusic(musicEnum musicChoice)
       switch (r)
       {
         case 0: ok = music.openFromFile("media/sound/magic_clock_shop.ogg"); break;
-        case 1: ok = music.openFromFile("media/sound/SavageLife.ogg"); break;
-        case 2: ok = music.openFromFile("media/sound/HauntedLighthouse.ogg"); break;
+        case 1: ok = music.openFromFile("media/sound/Defense-Line.ogg"); break;
+        case 2: ok = music.openFromFile("media/sound/Defense-Line.ogg"); break;
       }
 
       currentStandardMusic = r;
@@ -5554,7 +5554,7 @@ void WitchBlastGame::playMusic(musicEnum musicChoice)
     break;
 
   case MusicEnding:
-    ok = music.openFromFile("media/sound/AmbiantMedieval.ogg");
+    ok = music.openFromFile("media/sound/death_disco.ogg");
     break;
 
   case MusicBoss:
