@@ -1,7 +1,5 @@
 Change game sprites (School theme)
 
-change game name to DANK SMIT
-(Smit is a slave)
 
 ~~implement enemy to randomly teleport~~ 
       Already given to vampire ability
