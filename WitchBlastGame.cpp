@@ -294,6 +294,12 @@ WitchBlastGame::WitchBlastGame()
   currentStandardMusic = 0;
 
   // loading resources
+
+  //20 = media/buble.png (in terms of array position)
+  // 40 = media/corpses.png
+  // 60 = media/ui_spells.png
+  // 80 = media/destroyable_object.png
+  // 88 = media/Ruler_Melee.png
   const char *const images[] =
   {
     "media/player_0.png",      "media/player_1.png",
@@ -307,6 +313,8 @@ WitchBlastGame::WitchBlastGame()
     "media/evil_flower.png",   "media/slime.png",
     "media/imp.png",           "media/spider_egg.png",
     "media/spider_web.png",    "media/little_spider.png",
+
+
     "media/bubble.png",        "media/eyeball.png",
     "media/witch.png",
     "media/cauldron.png",      "media/snake.png",
@@ -319,6 +327,8 @@ WitchBlastGame::WitchBlastGame()
     "media/vampire.png",       "media/vampire_bat.png",
     "media/vampire_part.png",
     "media/blood.png",
+
+
     "media/corpses.png",       "media/corpses_big.png",
     "media/star.png",          "media/star2.png",
     "media/hurt_impact.png",
@@ -331,6 +341,8 @@ WitchBlastGame::WitchBlastGame()
     "media/pnj.png",           "media/fairy.png",
     "media/key_area.png",
     "media/ui_life.png",          "media/ui_mana.png",
+
+
     "media/ui_spells.png",        "media/ui_message.png",
     "media/ui_top_layer.png",     "media/ui_achiev.png",
     "media/fog.png",              "media/title_animation.png",
@@ -341,12 +353,14 @@ WitchBlastGame::WitchBlastGame()
     "media/dungeon_objects.png",  "media/shadows_standard.png",
     "media/shadows_corners.png",  "media/shadows_medium.png",
     "media/shadows_small.png",    "media/doors.png",
+
+
     "media/destroyable_objects.png",  "media/hall_of_fame.png",
     "media/lightning.png",
     "media/win_seal.png",         "media/hof_win_seal.png",
     "media/bag.png",              "media/ui_pause.png",
     "media/score_font.png",
-	"media/Ruler_Melee.png",
+	"media/ruler_melee.png",
   };
 
   for (const char *const filename : images)
@@ -1553,6 +1567,7 @@ void WitchBlastGame::updateRunningGame()
       }
     }
 
+	// Key for the MeleeFunction
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
 	{
 		if (gameState == gameStatePlaying && isPressing(0, KeyMelee, true))

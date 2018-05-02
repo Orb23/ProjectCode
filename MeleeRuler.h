@@ -16,7 +16,7 @@ class MeleeRuler : public CollidingSpriteEntity
 public:
 
 
-	MeleeRuler(float x, float y, float RulerLifeTime, enumMeleeType Meleetype, int level);
+	MeleeRuler(float x, float y, float RulerLifeTime, enumMeleeType Meleetype, int level,int direction);
 	virtual void animate(float delay);
 	virtual void render(sf::RenderTarget* app);
 	void collide();
@@ -48,6 +48,9 @@ protected:
 	virtual void onDying();
 	virtual void stuck();
 
+	int direction;
+	int rowSize = 10;
+	int colSize = 10;
 	int damages;
 	float renderScale;
 	enumMeleeType Meleetype;

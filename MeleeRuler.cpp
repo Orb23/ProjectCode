@@ -7,7 +7,7 @@
 #include "sfml_game\SoundManager.h"
 
 
-MeleeRuler::MeleeRuler(float x, float y, float RulerLifeTime, enumMeleeType Meleetype, int level)
+MeleeRuler::MeleeRuler(float x, float y, float RulerLifeTime, enumMeleeType Meleetype, int level,int direction)
 	: CollidingSpriteEntity(ImageManager::getInstance().getImage(IMAGE_RULER),x,y,RULER_WIDTH,RULER_HEIGHT)
 {
 	lifetime = RulerLifeTime;
@@ -42,6 +42,7 @@ MeleeRuler::MeleeRuler(float x, float y, float RulerLifeTime, enumMeleeType Mele
 	testWallsCollision = false;
 	flying = false;
 	critical = false;
+	this->direction = direction;
 
 	// avoid starting in wall
 	if (y > ((MAP_HEIGHT - 1) * TILE_HEIGHT - 16))
@@ -221,15 +222,43 @@ void MeleeRuler::render(sf::RenderTarget * app)
 }
 
 //calculate collision against walls
+// Parameter in direction ?????????? pass in somehow by reference possibly.
 void MeleeRuler::calculateBB()
 {
-	int colSize = testWallsCollision ? 1 : 10;
 
-	boundingBox.left = x - colSize;
-	boundingBox.width = colSize * 2;
+	//original line
+	//int colSize = testWallsCollision ? 1 : 10;
+
+	// Code below is used to change the hitbox of the bolt.
+	// if changes occur, it will be a set hitbox. (meaning the size is permanent
+	//		no matter where you shoot).
+	// Needs a separate function to detect of the hitbox is being created when the player
+	//	is looking down or up to maintain its logical hitbox.
+
+	//If else statement is needed to check if player is facing right or left.
+
+	//sets the hitbox of the ruler for north and south position.
+	if (direction == 8 || direction == 2) 
+	{
+		 colSize = 30;
+		 rowSize = 10;
+	}
+	//sets the hitbox of the ruler for the east and west position.
+	else if (direction == 4 || direction == 6)
+	{
+		 colSize = 10;
+		 rowSize = 30;
+	}
+
+	boundingBox.left = x - rowSize;
+	boundingBox.width = rowSize * 2;
+
+	//boundingBox.left = x - colSize;
+	//boundingBox.width = colSize * 2;
 	boundingBox.top = y - colSize;
 	boundingBox.height = colSize * 2;
 }
+
 
 //work needed
 void MeleeRuler::collide()

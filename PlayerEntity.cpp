@@ -1660,10 +1660,10 @@ void PlayerEntity::setEquipped(int item, bool toggleEquipped, bool isFairyPlayer
 void PlayerEntity::generateRuler(float x, float y)
 {
 	enumMeleeType meleeType = MeleeTypeStandard;
+	unsigned int rulerLevel = 0;
 
-	unsigned int rulerLevel = 1;
-
-	MeleeRuler* ruler = new MeleeRuler(x, getBolPositionY(), rulerLifeTime, meleeType, rulerLevel);
+		//First two parameters gets the center of the image of player.
+	MeleeRuler* ruler = new MeleeRuler(this->x, getBolPositionY(), rulerLifeTime, meleeType,rulerLevel,stabbingDirection);
 
 	int rulerDamage = fireDamages;
 	if (criticalChance > 0)
@@ -1795,16 +1795,20 @@ void PlayerEntity::stab(int direction)
 		switch (direction)
 		{
 		case 4:
-			generateRuler(-fireVelocity, 0.0f);
+			//left
+			generateRuler(-2500.0f, 0.0f);
 			break;
 		case 6:
-			generateRuler(fireVelocity, 0.0f);
+			//right
+			generateRuler(2500.0f, 0.0f);
 			break;
 		case 8:
-			generateRuler(0.0f, -fireVelocity);
+			//up
+			generateRuler(0.0f, -2500.0f);
 			break;
 		case 2:
-			generateRuler(0.0f, fireVelocity);
+			//down
+			generateRuler(0.0f, 7500.0f);
 			break;
 		}
 		canStabPlayer = false;
