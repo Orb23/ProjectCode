@@ -1521,12 +1521,43 @@ void WitchBlastGame::updateRunningGame()
       player->fire(8);
     else if (isPressing(0, KeyFireDown, false))
       player->fire(2);
+
     // alternative "one button" gameplay
     else if (isPressing(0, KeyFire, false))
     {
-      if (gameState == gameStatePlaying && isPressing(0, KeyFire, true))
-        firingDirection = player->getFacingDirection();
+		// Allows player to shoot diagonally
+		if (gameState == gameStatePlaying && isPressing(0, KeyFire, true))
+		{
+			if (isPressing(0, KeyLeft, false))
+			{
+				if (isPressing(0, KeyUp, false))
+					firingDirection = 7;
+				else if (isPressing(0, KeyDown, false))
+					firingDirection = 1;
+				else
+					firingDirection = 4;
+			}
+			else if (isPressing(0, KeyRight, false))
+			{
+				if (isPressing(0, KeyUp, false))
+					firingDirection = 9;
+				else if (isPressing(0, KeyDown, false))
+					firingDirection = 3;
+				else
+					firingDirection = 6;
+			}
+			else if (isPressing(0, KeyUp, false))
+			{
+				firingDirection = 8;
+			}
+			else if (isPressing(0, KeyDown, false))
+			{
+				firingDirection = 2;
+			}
+		}
       player->fire(firingDirection);
+	  /*firingDirection = player->getFacingDirection();*/
+	  player->resetFireDirection();
     }
     // alternative "firing with the mouse" gameplay
     else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
