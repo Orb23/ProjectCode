@@ -927,12 +927,12 @@ void PlayerEntity::renderPlayer(sf::RenderTarget* app)
   }
 
   // staff
-  int frameDx = equip[EQUIP_MAHOGANY_STAFF] ? 6 : 3;
-  if (isMirroring)
-    sprite.setTextureRect(sf::IntRect( (frameDx + frame) * width + width, spriteDy * height, -width, height));
-  else
-    sprite.setTextureRect(sf::IntRect( (frameDx + frame) * width, spriteDy * height, width, height));
-  app->draw(sprite);
+  //int frameDx = equip[EQUIP_MAHOGANY_STAFF] ? 6 : 3;
+  //if (isMirroring)
+  //  sprite.setTextureRect(sf::IntRect( (frameDx + frame) * width + width, spriteDy * height, -width, height));
+  //else
+  //  sprite.setTextureRect(sf::IntRect( (frameDx + frame) * width, spriteDy * height, width, height));
+  //app->draw(sprite);
 
   if (equip[EQUIP_BLOOD_SNAKE])
   {
@@ -1843,6 +1843,7 @@ void PlayerEntity::fire(int direction)
     }
     else if (!(equip[EQUIP_BOOK_DUAL] || equip[EQUIP_BOOK_DUAL_QUICK]) || (equip[EQUIP_BOOK_TRIPLE] || equip[EQUIP_BOOK_TRIPLE_QUICK]))
     {
+	  //Checks the direction the player faces and creates a bolt relative to the direction
       switch(direction)
       {
       case 4:
@@ -1857,6 +1858,18 @@ void PlayerEntity::fire(int direction)
       case 2:
         generateBolt(0.0f, fireVelocity);
         break;
+	  case 7:
+		  generateBolt(-fireVelocity, -fireVelocity);
+		  break;
+	  case 9:
+		  generateBolt(fireVelocity, -fireVelocity);
+		  break;
+	  case 1:
+		  generateBolt(-fireVelocity, fireVelocity);
+		  break;
+	  case 3:
+		  generateBolt(fireVelocity, fireVelocity);
+		  break;
       }
     }
 
