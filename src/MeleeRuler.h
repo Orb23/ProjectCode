@@ -16,7 +16,7 @@ class MeleeRuler : public CollidingSpriteEntity
 public:
 
 
-	MeleeRuler(float x, float y, float RulerLifeTime, enumShotType MeleeHit, int level);
+	MeleeRuler(float x, float y, float RulerLifeTime, enumMeleeType Meleetype, int level,int direction);
 	virtual void animate(float delay);
 	virtual void render(sf::RenderTarget* app);
 	void collide();
@@ -25,7 +25,7 @@ public:
 	unsigned int getLevel();
 	void setDamages(int damages);
 	void loseDamages(int damages);
-	enumShotType getMeleeHit();
+	enumMeleeType getMeleeType();
 	bool isCritical();
 	void setCritical(bool setCritical);
 
@@ -48,9 +48,12 @@ protected:
 	virtual void onDying();
 	virtual void stuck();
 
+	int direction;
+	int rowSize = 10;
+	int colSize = 10;
 	int damages;
 	float renderScale;
-	enumShotType MeleeHit;
+	enumMeleeType Meleetype;
 	enemyTypeEnum enemyType;
 
 	ParticleGenerator particleGenerator;

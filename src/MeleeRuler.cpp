@@ -1,31 +1,29 @@
 #include "MeleeRuler.h"
+#include "ExplosionEntity.h"
 #include "Constants.h"
-#include "sfml_game\CollidingSpriteEntity.h"
-#include "WitchBlastGame.h"
 #include "DungeonMap.h"
-#include "sfml_game\ImageManager.h"
-#include "sfml_game\SoundManager.h"
+#include "WitchBlastGame.h"
+#include "sfml_game/ImageManager.h"
+#include "sfml_game/SoundManager.h"
 
-
-MeleeRuler::MeleeRuler(float x, float y, float RulerLifeTime, enumShotType MeleeHit, int level)
+MeleeRuler::MeleeRuler(float x, float y, float RulerLifeTime, enumMeleeType Meleetype, int level,int direction)
 	: CollidingSpriteEntity(ImageManager::getInstance().getImage(IMAGE_RULER),x,y,RULER_WIDTH,RULER_HEIGHT)
 {
 	lifetime = RulerLifeTime;
-	setDamages(INITIAL_BOLT_DAMAGES);
+	setDamages(INITIAL_RULER_DAMAGES);
 	type = ENTITY_BOLT;
-	viscosity = INITIAL_BOLT_VISCOSITY;
 	this->level = level;
-	if (MeleeHit == ShotTypeLightning) viscosity += LIGHTNING_VISCOSITY_INCREASE[level];
+	// gets the frame image at v 0;
 	frame = 0;
 	setMap(game().getCurrentMap(), TILE_WIDTH, TILE_HEIGHT, 0, 0);
-	this->MeleeHit = MeleeHit;
+	this->Meleetype = Meleetype;
 	enemyType = EnemyTypeNone;
 	goThrough = false;
 	hitNumber = 0;
 	fromPlayer = true;
 
 	///	Test if the ruler is upgraded or not  (WILL NOT BE IMPLEMENTED)
-	//switch (MeleeHit)
+	//switch (Meleetype)
 	//{
 	//case ShotTypeDeterministic:
 	//case ShotTypeStandard:  frame = 0; break;
@@ -43,6 +41,7 @@ MeleeRuler::MeleeRuler(float x, float y, float RulerLifeTime, enumShotType Melee
 	testWallsCollision = false;
 	flying = false;
 	critical = false;
+	this->direction = direction;
 
 	// avoid starting in wall
 	if (y > ((MAP_HEIGHT - 1) * TILE_HEIGHT - 16))
@@ -76,17 +75,17 @@ void MeleeRuler::setDamages(int damages)
 	// Size of sprite grows relative to damage value
 	this->damages = damages;
 
-	if (damages <= 4)  renderScale = 0.7f;
-	else if (damages <= 6)  renderScale = 0.78f;
-	else if (damages <= 8)  renderScale = 0.85f;
-	else if (damages <= 12) renderScale = 0.9f;
-	else if (damages <= 16) renderScale = 1.0f;
-	else if (damages <= 20) renderScale = 1.1f;
-	else if (damages <= 24) renderScale = 1.2f;
-	else if (damages <= 30) renderScale = 1.3f;
-	else renderScale = 1.4f;
+	//if (damages <= 4)  renderScale = 0.7f;
+	//else if (damages <= 6)  renderScale = 0.78f;
+	//else if (damages <= 8)  renderScale = 0.85f;
+	//else if (damages <= 12) renderScale = 0.9f;
+	//else if (damages <= 16) renderScale = 1.0f;
+	//else if (damages <= 20) renderScale = 1.1f;
+	//else if (damages <= 24) renderScale = 1.2f;
+	//else if (damages <= 30) renderScale = 1.3f;
+	//else renderScale = 1.4f;
 
-	sprite.scale(renderScale, renderScale);
+	//sprite.scale(renderScale, renderScale);
 }
 
 
@@ -97,9 +96,9 @@ void MeleeRuler::loseDamages(int damages)
 	critical = false;
 }
 
-enumShotType MeleeRuler::getMeleeHit()
+enumMeleeType MeleeRuler::getMeleeType()
 {
-	return MeleeHit;
+	return Meleetype;
 }
 
 enemyTypeEnum MeleeRuler::getEnemyType()
@@ -145,7 +144,7 @@ void MeleeRuler::stuck()
 void MeleeRuler::animate(float delay)
 {
 
-	particleGenerator.GenerateParticles(frame, IMAGE_RULER, x, y, RULER_WIDTH, RULER_HEIGHT, Vector2D(0.0f, 0.0f),10, renderScale);
+	particleGenerator.GenerateParticles(frame, IMAGE_RULER, x, y, RULER_WIDTH, RULER_HEIGHT, Vector2D(0.0f, 0.0f),0, renderScale);
 
 	z = y + height;
 
@@ -164,7 +163,7 @@ void MeleeRuler::animate(float delay)
 		CollidingSpriteEntity::animate(delay);
 
 		if (game().getPlayer()->isEquiped(EQUIP_RAPID_SHOT) || damages < 5)
-			particleGenerator.GenerateParticles(frame, IMAGE_RULER, (x + oldX) * 0.5f, (y + oldY) * 0.5f, RULER_WIDTH, RULER_HEIGHT, Vector2D(0.0f, 0.0f), 10, renderScale);
+			particleGenerator.GenerateParticles(frame, IMAGE_RULER, (x + oldX) * 0.5f, (y + oldY) * 0.5f, RULER_WIDTH, RULER_HEIGHT, Vector2D(0.0f, 0.0f), 0, renderScale);
 	}
 
 
@@ -206,9 +205,11 @@ void MeleeRuler::animate(float delay)
 	}
 
 	// Calculate velocity speed, Need to change this to something else to destroy the ruler
-	if (((velocity.x)*(velocity.x) + (velocity.y)*(velocity.y)) < 1500.0f) isDying = true;
+	//if (((velocity.x)*(velocity.x) + (velocity.y)*(velocity.y)) < 1500.0f) isDying = true;
+	isDying = true;
 }
 
+// Displays the ruler hitbox
 void MeleeRuler::render(sf::RenderTarget * app)
 {
 	
@@ -219,15 +220,44 @@ void MeleeRuler::render(sf::RenderTarget * app)
 	}
 }
 
+//calculate collision against walls
+// Parameter in direction ?????????? pass in somehow by reference possibly.
 void MeleeRuler::calculateBB()
 {
-	int colSize = testWallsCollision ? 1 : 10;
 
-	boundingBox.left = x - colSize;
-	boundingBox.width = colSize * 2;
+	//original line
+	//int colSize = testWallsCollision ? 1 : 10;
+
+	// Code below is used to change the hitbox of the bolt.
+	// if changes occur, it will be a set hitbox. (meaning the size is permanent
+	//		no matter where you shoot).
+	// Needs a separate function to detect of the hitbox is being created when the player
+	//	is looking down or up to maintain its logical hitbox.
+
+	//If else statement is needed to check if player is facing right or left.
+
+	//sets the hitbox of the ruler for north and south position.
+	if (direction == 8 || direction == 2) 
+	{
+		 colSize = 30;
+		 rowSize = 10;
+	}
+	//sets the hitbox of the ruler for the east and west position.
+	else if (direction == 4 || direction == 6)
+	{
+		 colSize = 10;
+		 rowSize = 30;
+	}
+
+	boundingBox.left = x - rowSize;
+	boundingBox.width = rowSize * 2;
+
+	//boundingBox.left = x - colSize;
+	//boundingBox.width = colSize * 2;
 	boundingBox.top = y - colSize;
 	boundingBox.height = colSize * 2;
 }
+
 
 //work needed
 void MeleeRuler::collide()
@@ -235,21 +265,19 @@ void MeleeRuler::collide()
 	hitNumber++;
 	if (fromPlayer)
 	{
-		//if (hitNumber == 4) game().registerAchievement(Achievement4Hits);
 
-		if (goThrough)
-		{
 			if (damages > 0) return;
-		}
+
 	}
 
 	isDying = true;
 
 	//Again with velocity, need to change this. possibly
-	for (int i = 0; i<5; i++)
-	{
-		Vector2D vel(40.0f + rand() % 50);
-	}
+	//for (int i = 0; i<5; i++)
+	//{
+	//	Vector2D vel(40.0f + rand() % 50);
+	//}
+
 }
 
 //checks if the wall is destructable. NEED TO FIND THIS WALL IN GAME TO TEST
@@ -283,11 +311,11 @@ void MeleeRuler::collideMapRight()
 
 	SoundManager::getInstance().playSound(SOUND_WALL_IMPACT);
 	
-	//Need to be reworked to not use velocity. (Melee stays put.)
-	for (int i = 0; i<5; i++)
-	{
-		Vector2D vel(100.0f + rand() % 150);
-	}
+	////Need to be reworked to not use velocity. (Melee stays put.)
+	//for (int i = 0; i<5; i++)
+	//{
+	//	Vector2D vel(100.0f + rand() % 150);
+	//}
 }
 
 void MeleeRuler::collideMapLeft()
@@ -299,10 +327,10 @@ void MeleeRuler::collideMapLeft()
 	SoundManager::getInstance().playSound(SOUND_WALL_IMPACT);
 
 	//Need to be reworked to not use velocity. (Melee stays put.)
-	for (int i = 0; i<5; i++)
-	{
-		Vector2D vel(100.0f + rand() % 150);
-	}
+	//for (int i = 0; i<5; i++)
+	//{
+	//	Vector2D vel(100.0f + rand() % 150);
+	//}
 }
 
 void MeleeRuler::collideMapTop()
@@ -312,10 +340,10 @@ void MeleeRuler::collideMapTop()
 	isDying = true;
 
 	SoundManager::getInstance().playSound(SOUND_WALL_IMPACT);
-	for (int i = 0; i<5; i++)
-	{
-		Vector2D vel(100.0f + rand() % 150);
-	}
+	//for (int i = 0; i<5; i++)
+	//{
+	//	Vector2D vel(100.0f + rand() % 150);
+	//}
 }
 
 void MeleeRuler::collideMapBottom()
@@ -324,10 +352,10 @@ void MeleeRuler::collideMapBottom()
 	isDying = true;
 
 	SoundManager::getInstance().playSound(SOUND_WALL_IMPACT);
-	for (int i = 0; i<5; i++)
-	{
-		Vector2D vel(100.0f + rand() % 150);
-	}
+	//for (int i = 0; i<5; i++)
+	//{
+	//	Vector2D vel(100.0f + rand() % 150);
+	//}
 }
 
 

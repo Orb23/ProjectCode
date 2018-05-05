@@ -1,6 +1,7 @@
 #include "EnemyEntity.h"
 #include "PlayerEntity.h"
 #include "ExplosionEntity.h"
+#include "MeleeRuler.h"
 #include "sfml_game/SpriteEntity.h"
 #include "sfml_game/ImageManager.h"
 #include "sfml_game/SoundManager.h"
@@ -29,6 +30,7 @@ EnemyEntity::EnemyEntity(sf::Texture* image, float x, float y)
   enemyType = NB_ENEMY;
   meleeLevel = 0;
   meleeType = ShotTypeStandard;
+  meleeRulerType = MeleeTypeStandard;
   canExplode = true;
 
   label_dy = 0;
@@ -119,14 +121,16 @@ void EnemyEntity::collideMapBottom()
   velocity.y = 0.0f;
 }
 
+// THIS IS WHERE IS CHECKS ANY COLLISION WITH ANY ENTITY.
 void EnemyEntity::readCollidingEntity(CollidingSpriteEntity* entity)
 {
   if (!isDying && !isAgonising && collideWithEntity(entity))
   {
-    if (entity->getType() == ENTITY_PLAYER || entity->getType() == ENTITY_BOLT )
+    if (entity->getType() == ENTITY_PLAYER || entity->getType() == ENTITY_BOLT || entity->getType() ==  ENTITY_RULER)
     {
       PlayerEntity* playerEntity = dynamic_cast<PlayerEntity*>(entity);
       BoltEntity* boltEntity = dynamic_cast<BoltEntity*>(entity);
+	  MeleeRuler* rulerEntity = dynamic_cast<MeleeRuler*>(entity);
 
       if (playerEntity != NULL && !playerEntity->isDead())
       {
@@ -155,11 +159,19 @@ void EnemyEntity::readCollidingEntity(CollidingSpriteEntity* entity)
         inflictsRecoilTo(playerEntity);
       }
 
+	  // if colliding with bolt. May need to include another function that detects meleeRuler hitbox. Logic is needed.
       else if (boltEntity != NULL && !boltEntity->getDying() && boltEntity->getAge() > 0.05f)
       {
         collideWithBolt(boltEntity);
       }
+
+	  else if (rulerEntity != NULL && !rulerEntity->getDying())
+	  {
+		  collideWithMelee(rulerEntity);
+	  }
     }
+
+
     else // collision with other enemy ?
     {
       if (entity->getType() >= ENTITY_ENEMY && entity->getType() <= ENTITY_ENEMY_MAX)
@@ -220,6 +232,36 @@ void EnemyEntity::collideWithBolt(BoltEntity* boltEntity)
   boltEntity->collide();
 }
 
+void EnemyEntity::collideWithMelee(MeleeRuler* rulerEntity)
+{
+	float xs = (x + rulerEntity->getX()) / 2;
+	float ys = (y + rulerEntity->getY()) / 2;
+
+
+	int maxDamages = hp;
+	int meleeDamages = meleeHurt(getHurtParamsMelee(rulerEntity->getDamages(),rulerEntity->getMeleeType(),rulerEntity->getLevel(),rulerEntity->isCritical(),SourceTypeMelee,enemyType, rulerEntity->getGoThrough()));
+	if (hp > 0)
+	{
+		rulerEntity->loseDamages(rulerEntity->getDamages());
+	}
+	else
+	{
+		rulerEntity->loseDamages(maxDamages >= meleeDamages ? meleeDamages : maxDamages);
+	}
+
+	if (bloodColor > BloodNone) game().generateBlood(x, y, bloodColor);
+	SoundManager::getInstance().playSound(SOUND_IMPACT);
+
+	SpriteEntity* star = new SpriteEntity(ImageManager::getInstance().getImage(IMAGE_HURT_IMPACT), xs, ys);
+	star->setFading(true);
+	star->setZ(y + 100);
+	star->setLifetime(0.7f);
+	star->setType(ENTITY_EFFECT);
+	star->setSpin(400.0f);
+
+	rulerEntity->collide();
+}
+
 int EnemyEntity::getCollisionDirection(BoltEntity* boltEntity)
 {
   int tol = 4;
@@ -271,6 +313,14 @@ int EnemyEntity::hurt(StructHurt hurtParam)
   if (hurtedHp > 0 && hurtingSound != SOUND_NONE && hp > 0)
     SoundManager::getInstance().playSound(hurtingSound);
   return hurtedHp;
+}
+
+int EnemyEntity::meleeHurt(StructHurt2 hurtParam)
+{
+	int hurtedHp = BaseCreatureEntity::meleeHurt(hurtParam);
+	if (hurtedHp > 0 && hurtingSound != SOUND_NONE && hp > 0)
+		SoundManager::getInstance().playSound(hurtingSound);
+	return hurtedHp;
 }
 
 void EnemyEntity::dying()

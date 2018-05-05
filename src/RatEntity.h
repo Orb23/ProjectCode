@@ -19,6 +19,7 @@ class RatEntity : public EnemyEntity
 
     virtual void collideWithEnemy(EnemyEntity* entity) override;
     virtual void collideWithBolt(BoltEntity* boltEntity);
+	virtual void RatEntity::collideWithMelee(MeleeRuler* rulerEntity);
     virtual void drop();
   private:
     ratTypeEnum ratType;

@@ -617,6 +617,87 @@ int BaseCreatureEntity::hurt(StructHurt hurtParam)
   return hurtParam.damage;
 }
 
+int BaseCreatureEntity::meleeHurt(StructHurt2 hurtParam)
+{
+	int oldHp = hp;
+	int absorbedHp = 0;
+	bool poisoned = false;
+	meleeHurtingType = hurtParam.hurtingType;
+	if (armor > 0.01f && meleeHurtingType != ShotTypeDeterministic)
+	{
+		absorbedHp = hurtParam.damage * armor;
+		if (absorbedHp == 0) absorbedHp = 1;
+		hurtParam.damage -= absorbedHp;
+	}
+
+
+	if (hurtParam.damage > 0)
+	{
+		hurting = true;
+		hurtingDelay = HURTING_DELAY;
+		this->meleeHurtingType = meleeHurtingType;
+
+		hp -= hurtParam.damage;
+
+		if (hp <= 0)
+		{
+			hp = 0;
+
+			prepareDying();
+			// exploding ?
+			if (game().getPlayer()->isEquiped(EQUIP_SULFUR) && canExplode)
+			{
+				int luck = meleeHurtingType == ShotTypeFire ? 33 : 25;
+				if (rand() % 100 < luck) makeExplode();
+			}
+		}
+
+		// display damage
+		if (displayDamage && oldHp > 0)
+		{
+			int displayedDamage = hurtParam.damage;
+			if (hurtParam.goThrough && hp == 0)
+			{
+				hurtParam.damage = oldHp + absorbedHp;
+				displayedDamage = oldHp;
+			}
+
+			std::ostringstream oss;
+			oss << "-" << displayedDamage;
+			int textSize;
+			if (displayedDamage < 8) textSize = 17;
+			else textSize = 17 + (displayedDamage - 3) / 5;
+			TextEntity* text = new TextEntity(oss.str(), textSize, x, y - 20.0f);
+			text->setColor(TextEntity::COLOR_FADING_RED);
+			text->setAge(-0.6f);
+			text->setLifetime(0.3f);
+			text->setWeight(-60.0f);
+			text->setZ(2000);
+			text->setAlignment(ALIGN_CENTER);
+			text->setType(ENTITY_FLYING_TEXT);
+			while (textTooClose(text, 15, 15)) text->setY(text->getY() - 5);
+
+			if (hurtParam.critical)
+			{
+				std::ostringstream crss;
+				crss << tools::getLabel("critical");
+				if (game().getPlayer()->isEquiped(EQUIP_CRITICAL_ADVANCED))
+					crss << " X3";
+				else
+					crss << " X2";
+				displayFlyingText(x, text->getY() - 16.0f, 16, crss.str(), TextEntity::COLOR_FADING_RED);
+			}
+
+			if (poisoned)
+			{
+				displayFlyingText(x, text->getY() - 16.0f, 16, tools::getLabel("poison"), TextEntity::COLOR_FADING_RED);
+			}
+			if (hurtParam.critical) SoundManager::getInstance().playSound(SOUND_CRITICAL);
+		}
+	}
+	return hurtParam.damage;
+}
+
 void BaseCreatureEntity::displayFlyingText(float xText, float yText, int sizeText, std::string text, TextEntity::colorTypeEnum color)
 {
   TextEntity* textEntity = new TextEntity(text, sizeText, xText, yText);

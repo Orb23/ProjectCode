@@ -69,6 +69,9 @@ const int BOLT_WIDTH = 24;
 const int BOLT_HEIGHT = 24;
 const int BOLT_PRO_LINE = 10;
 
+const int RULER_WIDTH = 96;
+const int RULER_HEIGHT = 64;
+
 const int BB_LEFT    = 22;
 const int BB_RIGHT   = 22;
 const int BB_TOP     = 4;
@@ -178,6 +181,7 @@ enum enum_images {
   IMAGE_BAG,
   IMAGE_UI_PAUSE,
   IMAGE_SCORE_FONT,
+  IMAGE_RULER,
 
   NB_IMAGES
 };
@@ -394,6 +398,10 @@ enum enumShotType {
   ShotTypeDeterministic
   };
 
+enum enumMeleeType {
+	MeleeTypeStandard
+};
+
 // special shots effects
 const int MAX_SHOT_LEVEL = 3;
 
@@ -463,6 +471,7 @@ const int ENTITY_ENEMY = 31;
 const int ENTITY_ENEMY_INVOCATED = 32;
 const int ENTITY_ENEMY_BOSS = 33;
 const int ENTITY_ENEMY_NC = 34;
+const int ENTITY_RULER = 35;
 
 const int ENTITY_ENEMY_MAX = ENTITY_ENEMY_NC;
 const int ENTITY_ENEMY_MAX_COUNT = ENTITY_ENEMY_BOSS;
@@ -484,6 +493,10 @@ const float INITIAL_BOLT_LIFE = 0.45f;
 const int INITIAL_BOLT_DAMAGES = 8;
 const float INITIAL_BOLT_VELOCITY = 700.0f;
 const float INITIAL_BOLT_VISCOSITY = 0.98f;
+
+const float INITIAL_RULER_LIFE = 0.03f;
+const int INITIAL_RULER_DAMAGES = 15;
+
 
 const float FAIRY_SPEED = 220.0f;
 const float FAIRY_FIRE_DELAY = 0.8f;

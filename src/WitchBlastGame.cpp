@@ -294,6 +294,12 @@ WitchBlastGame::WitchBlastGame()
   currentStandardMusic = 0;
 
   // loading resources
+
+  //20 = media/buble.png (in terms of array position)
+  // 40 = media/corpses.png
+  // 60 = media/ui_spells.png
+  // 80 = media/destroyable_object.png
+  // 88 = media/Ruler_Melee.png
   const char *const images[] =
   {
     "media/player_0.png",      "media/player_1.png",
@@ -307,6 +313,8 @@ WitchBlastGame::WitchBlastGame()
     "media/evil_flower.png",   "media/slime.png",
     "media/imp.png",           "media/spider_egg.png",
     "media/spider_web.png",    "media/little_spider.png",
+
+
     "media/bubble.png",        "media/eyeball.png",
     "media/witch.png",
     "media/cauldron.png",      "media/snake.png",
@@ -319,6 +327,8 @@ WitchBlastGame::WitchBlastGame()
     "media/vampire.png",       "media/vampire_bat.png",
     "media/vampire_part.png",
     "media/blood.png",
+
+
     "media/corpses.png",       "media/corpses_big.png",
     "media/star.png",          "media/star2.png",
     "media/hurt_impact.png",
@@ -331,6 +341,8 @@ WitchBlastGame::WitchBlastGame()
     "media/pnj.png",           "media/fairy.png",
     "media/key_area.png",
     "media/ui_life.png",          "media/ui_mana.png",
+
+
     "media/ui_spells.png",        "media/ui_message.png",
     "media/ui_top_layer.png",     "media/ui_achiev.png",
     "media/fog.png",              "media/title_animation.png",
@@ -341,11 +353,14 @@ WitchBlastGame::WitchBlastGame()
     "media/dungeon_objects.png",  "media/shadows_standard.png",
     "media/shadows_corners.png",  "media/shadows_medium.png",
     "media/shadows_small.png",    "media/doors.png",
+
+
     "media/destroyable_objects.png",  "media/hall_of_fame.png",
     "media/lightning.png",
     "media/win_seal.png",         "media/hof_win_seal.png",
     "media/bag.png",              "media/ui_pause.png",
     "media/score_font.png",
+	"media/ruler_melee.png",
   };
 
   for (const char *const filename : images)
@@ -1210,8 +1225,7 @@ void WitchBlastGame::updateRunningGame()
         }
         else
 #endif
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)
-            || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift))
         {
           player->dropConsumables(event.key.code - sf::Keyboard::Num1);
         }
@@ -1521,7 +1535,6 @@ void WitchBlastGame::updateRunningGame()
       player->fire(8);
     else if (isPressing(0, KeyFireDown, false))
       player->fire(2);
-
     // alternative "one button" gameplay
     else if (isPressing(0, KeyFire, false))
     {
@@ -1583,6 +1596,15 @@ void WitchBlastGame::updateRunningGame()
         }
       }
     }
+
+	// Key for the MeleeFunction
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
+	{
+		if (gameState == gameStatePlaying && isPressing(0, KeyMelee, true))
+			stabbingDirection = player->getFacingDirection();
+		player->stab(stabbingDirection);
+	}
+
 
     // spell (right click)
     if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && (gameState == gameStatePlaying))
@@ -5006,6 +5028,7 @@ void WitchBlastGame::initMonsterArray()
       monsterArray[i][j] = false;
 }
 
+//ADDS MONSTER INTO MAP/GAME
 void WitchBlastGame::addMonster(enemyTypeEnum monsterType, float xm, float ym)
 {
   StructMonster monster;
@@ -6323,6 +6346,8 @@ void WitchBlastGame::saveConfigurationToFile()
   newMap["keyboard_spell"] = intToString(input[KeySpell]);
   newMap["keyboard_interact"] = intToString(input[KeyInteract]);
   newMap["keyboard_fire"] = intToString(input[KeyFire]);
+  //ADDED LINE BELOW
+  newMap["keyboard_melee"] = intToString(input[KeyMelee]);
   newMap["keyboard_time_control"] = intToString(input[KeyTimeControl]);
   newMap["keyboard_fire_select"] = intToString(input[KeyFireSelect]);
 
@@ -6373,6 +6398,7 @@ void WitchBlastGame::configureFromFile()
   input[KeyInteract] = sf::Keyboard::E;
   input[KeyFireSelect] = sf::Keyboard::Tab;
   input[KeyTimeControl] = sf::Keyboard::RShift;
+  input[KeyMelee] = sf::Keyboard::K;
 
   // Joystick
   joystickInput[KeyUp].isButton = false;
@@ -6413,6 +6439,8 @@ void WitchBlastGame::configureFromFile()
   addKey(KeyFireLeft, "keyboard_fire_left");
   addKey(KeyFireRight, "keyboard_fire_right");
   addKey(KeyFire, "keyboard_fire");
+  // CHANGE LINE
+  addKey(KeyMelee, "keyboard_melee");
   addKey(KeySpell, "keyboard_spell");
   addKey(KeyInteract, "keyboard_interact");
   addKey(KeyTimeControl, "keyboard_time_control");
@@ -6738,6 +6766,7 @@ void WitchBlastGame::registerLanguage()
   input[KeyFireSelect] = sf::Keyboard::Tab;
   input[KeyTimeControl] = sf::Keyboard::RShift;
   input[KeySpell]  = sf::Keyboard::Space;
+  input[KeyMelee] = sf::Keyboard::K;
 }
 
 int WitchBlastGame::getAchievementsPercents()
@@ -7508,11 +7537,11 @@ void WitchBlastGame::addPresentItem(int n)
   if (n >= 0 && n < NUMBER_EQUIP_ITEMS) presentItems[n] = true;
 }
 
+// CODE GOES INTO HERE 
 bool WitchBlastGame::isPressing(int p, inputKeyEnum k, bool oneShot)
 {
   if (gameState != gameStatePlaying || nbPlayers == 0)
-    return ((actionKey[0][k].isPressed && (!oneShot || actionKey[0][k].isTriggered))
-            || (actionKey[1][k].isPressed && (!oneShot || actionKey[1][k].isTriggered)));
+    return ((actionKey[0][k].isPressed && (!oneShot || actionKey[0][k].isTriggered)) || (actionKey[1][k].isPressed && (!oneShot || actionKey[1][k].isTriggered)));
   else
     return (actionKey[p][k].isPressed && (!oneShot || actionKey[p][k].isTriggered));
 }

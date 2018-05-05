@@ -111,6 +111,17 @@ struct StructHurt
   bool goThrough;
 };
 
+struct StructHurt2
+{
+	int damage;
+	enumMeleeType hurtingType;
+	int level;
+	bool critical;
+	sourceTypeEnum sourceType;
+	enemyTypeEnum enemyType;
+	bool goThrough;
+};
+
 enum enumSpecialState
 {
   SpecialStateIce, // = 0
@@ -218,6 +229,7 @@ public:
   virtual bool collideWithMap(int direction);
   void displayFlyingText(float xText, float yText, int sizeText, std::string text, TextEntity::colorTypeEnum color);
   virtual int hurt(StructHurt hurtParam);
+  virtual int meleeHurt(StructHurt2 hurtParam);
   virtual void prepareDying();
   virtual void dying();
   enum enumMovingStyle { movWalking, movFlying};
@@ -255,13 +267,7 @@ public:
 
   void heal(int healPoints);
 
-  static StructHurt getHurtParams(int damage,
-                                  enumShotType hurtingType,
-                                  int level,
-                                  bool critical,
-                                  sourceTypeEnum sourceType,
-                                  enemyTypeEnum enemyType,
-                                  bool goThrough)
+  static StructHurt getHurtParams(int damage, enumShotType hurtingType, int level, bool critical, sourceTypeEnum sourceType, enemyTypeEnum enemyType, bool goThrough)
   {
     StructHurt hurtParams;
     hurtParams.damage = damage;
@@ -273,6 +279,20 @@ public:
     hurtParams.goThrough = goThrough;
 
     return hurtParams;
+  }
+  //for melee
+  static StructHurt2 getHurtParamsMelee(int damage, enumMeleeType hurtingType, int level, bool critical, sourceTypeEnum sourceType, enemyTypeEnum enemyType, bool goThrough)
+  {
+	  StructHurt2 hurtParams;
+	  hurtParams.damage = damage;
+	  hurtParams.hurtingType = hurtingType;
+	  hurtParams.level = level;
+	  hurtParams.critical = critical;
+	  hurtParams.sourceType = sourceType;
+	  hurtParams.enemyType = enemyType;
+	  hurtParams.goThrough = goThrough;
+
+	  return hurtParams;
   }
 
   bool intersectsSegments(Vector2D a1, Vector2D a2, Vector2D b1, Vector2D b2);
@@ -296,6 +316,7 @@ protected:
   bool hurting;
   float hurtingDelay;
   enumShotType hurtingType;
+  enumMeleeType meleeHurtingType;
   enumBloodColor bloodColor;
   enumMovingStyle movingStyle;
 

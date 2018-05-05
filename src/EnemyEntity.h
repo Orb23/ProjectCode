@@ -4,6 +4,7 @@
 #include "BaseCreatureEntity.h"
 #include "BoltEntity.h"
 #include "Items.h"
+#include "MeleeRuler.h"
 
 class EnemyEntity : public BaseCreatureEntity
 {
@@ -12,7 +13,9 @@ public:
   virtual void animate(float delay);
   virtual void calculateBB();
   virtual void render(sf::RenderTarget* app);
+  // The two functions below overrides the base class BaseCreatureEntity.
   virtual int hurt(StructHurt hurtParam) override;
+  virtual int meleeHurt(StructHurt2 hurtParam) override;
 
   virtual bool canCollide();
   enemyTypeEnum getEnemyType();
@@ -35,11 +38,15 @@ protected:
   void dropItem(enumItemType item);
   virtual void collideWithEnemy(EnemyEntity* entity);
   virtual void collideWithBolt(BoltEntity* boltEntity);
+
+  virtual void collideWithMelee(MeleeRuler* rulerEntity);
+
   int getCollisionDirection(BoltEntity* boltEntity);
 
   int meleeDamages;
   int meleeLevel;
   enumShotType meleeType;
+  enumMeleeType meleeRulerType;
 
   float h;            /*!< Vertical position */
   float hVelocity;    /*!< Vertical velocity */

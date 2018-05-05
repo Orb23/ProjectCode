@@ -14,6 +14,7 @@
 #include "WitchBlastGame.h"
 #include "TextEntity.h"
 #include "TextMapper.h"
+#include "MeleeRuler.h"
 
 #include <iostream>
 #include <sstream>
@@ -111,6 +112,7 @@ PlayerEntity::PlayerEntity(float x, float y)
   computePlayer();
 
   firingDirection = 5;
+  //stabbingDirection = 5;
   facingDirection = 2;
   keyDirection = 5;
   canAnimateFire = true;
@@ -926,7 +928,7 @@ void PlayerEntity::renderPlayer(sf::RenderTarget* app)
     app->draw(sprite);
   }
 
-  // staff
+  //// staff
   //int frameDx = equip[EQUIP_MAHOGANY_STAFF] ? 6 : 3;
   //if (isMirroring)
   //  sprite.setTextureRect(sf::IntRect( (frameDx + frame) * width + width, spriteDy * height, -width, height));
@@ -1654,6 +1656,36 @@ void PlayerEntity::setEquipped(int item, bool toggleEquipped, bool isFairyPlayer
   computePlayer();
 }
 
+//  NEWLY ADDED FUNCTION THAT GENERATE RULER FROM PLAYER ENTITY
+void PlayerEntity::generateRuler(float x, float y)
+{
+	enumMeleeType meleeType = MeleeTypeStandard;
+	unsigned int rulerLevel = 0;
+
+		//First two parameters gets the center of the image of player.
+	MeleeRuler* ruler = new MeleeRuler(this->x, getBolPositionY(), rulerLifeTime, meleeType,rulerLevel,stabbingDirection);
+
+	int rulerDamage = fireDamages;
+	if (criticalChance > 0)
+		if (rand() % 100 < criticalChance)
+		{
+			rulerDamage *= equip[EQUIP_CRITICAL_ADVANCED] ? 3 : 2;
+			ruler->setCritical(true);
+		}
+	ruler->setDamages(rulerDamage);
+
+	if (equip[EQUIP_GLOVES_ADVANCED])
+	{
+		if (firingDirection == 2 || firingDirection == 8)
+			x += velocity.x * 0.7f;
+		else if (firingDirection == 4 || firingDirection == 6)
+			y += velocity.y * 0.7f;
+	}
+
+	ruler->setVelocity(Vector2D(x, y));
+
+}
+
 void PlayerEntity::generateBolt(float velx, float vely)
 {
   enumShotType boltType = ShotTypeStandard;
@@ -1747,6 +1779,46 @@ void PlayerEntity::resetFireDirection()
 int PlayerEntity::getFireDirection()
 {
   return firingDirection;
+}
+
+void PlayerEntity::stab(int direction)
+{
+	stabbingDirection = direction;
+
+	if (playerStatus != playerStatusDead)
+		for (int unsigned i = 0; i < fairies.size(); i++)
+			fairies[i]->fire(direction);
+	if (canFirePlayer && playerStatus != playerStatusDead && playerStatus != playerStatusAcquire)
+	{
+		canAnimateStab = true;
+		//SoundManager::getInstance().playPitchModSound(SOUND_WOOD_RULER);
+		switch (direction)
+		{
+		case 4:
+			//left
+			generateRuler(-2500.0f, 0.0f);
+			break;
+		case 6:
+			//right
+			generateRuler(2500.0f, 0.0f);
+			break;
+		case 8:
+			//up
+			generateRuler(0.0f, -2500.0f);
+			break;
+		case 2:
+			//down
+			generateRuler(0.0f, 7500.0f);
+			break;
+		}
+		canStabPlayer = false;
+		currentStabDelay = stabDelay;
+	}
+	else
+	{
+		canAnimateStab = false;
+	}
+
 }
 
 void PlayerEntity::fire(int direction)
@@ -1843,7 +1915,7 @@ void PlayerEntity::fire(int direction)
     }
     else if (!(equip[EQUIP_BOOK_DUAL] || equip[EQUIP_BOOK_DUAL_QUICK]) || (equip[EQUIP_BOOK_TRIPLE] || equip[EQUIP_BOOK_TRIPLE_QUICK]))
     {
-	  //Checks the direction the player faces and creates a bolt relative to the direction
+		//Checks the direction the player faces and creates a bolt relative to the direction
       switch(direction)
       {
       case 4:
@@ -1860,16 +1932,15 @@ void PlayerEntity::fire(int direction)
         break;
 	  case 7:
 		  generateBolt(-fireVelocity, -fireVelocity);
-		  break;
+			  break;
 	  case 9:
 		  generateBolt(fireVelocity, -fireVelocity);
-		  break;
+			  break;
 	  case 1:
 		  generateBolt(-fireVelocity, fireVelocity);
 		  break;
 	  case 3:
 		  generateBolt(fireVelocity, fireVelocity);
-		  break;
       }
     }
 

@@ -6,6 +6,7 @@
 #include "sfml_game/SoundManager.h"
 #include "Constants.h"
 #include "WitchBlastGame.h"
+#include "MeleeRuler.h"
 
 RatEntity::RatEntity(float x, float y, ratTypeEnum ratType, bool invocated)
   : EnemyEntity (ImageManager::getInstance().getImage(IMAGE_RAT), x, y)
@@ -216,6 +217,12 @@ void RatEntity::collideWithBolt(BoltEntity* boltEntity)
     }
   }
   else EnemyEntity::collideWithBolt(boltEntity);
+}
+
+	//operates if melee from player collides with rat entity.
+void RatEntity::collideWithMelee(MeleeRuler* rulerEntity)
+{
+	EnemyEntity::collideWithMelee(rulerEntity);
 }
 
 void RatEntity::drop()

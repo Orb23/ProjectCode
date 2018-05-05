@@ -115,6 +115,13 @@ class PlayerEntity : public BaseCreatureEntity
      */
     void fire(int direction);
 
+	/*!
+	* \Stabs in a given direction.
+	*
+	*
+	*/
+	void stab(int direction);
+
     /*!
      *  \brief reset the fire direction of the player
      */
@@ -532,6 +539,7 @@ class PlayerEntity : public BaseCreatureEntity
   protected:
     virtual void readCollidingEntity(CollidingSpriteEntity* entity);
     void generateBolt(float velx, float vely);
+	void generateRuler(float x, float y);
     void rageFire(float damage, bool full, float velMult);
 
     virtual void collideMapRight();
@@ -545,17 +553,22 @@ class PlayerEntity : public BaseCreatureEntity
     int fireDamages;
     float fireVelocity;
     float fireDelay;
+	float stabDelay;
     float fireAnimationDelay;
     float fireAnimationDelayMax;
     int fireAnimationDirection;
     bool canAnimateFire;
+	bool canAnimateStab;
     float spellAnimationDelay;
     float spellAnimationDelayMax;
     float currentFireDelay;
+	float currentStabDelay;
     float randomFireDelay;
     float rageFireDelay;
     float hiccupDelay;
     float boltLifeTime;
+	//
+	float rulerLifeTime;
     int gold;
     int donation;
     int criticalChance;
@@ -567,6 +580,7 @@ class PlayerEntity : public BaseCreatureEntity
     int lostHp[LAST_LEVEL];
 
     bool canFirePlayer;
+	bool canStabPlayer;
     playerStatusEnum playerStatus;
     float statusTimer;
     enumItemType acquiredItem;
@@ -577,6 +591,7 @@ class PlayerEntity : public BaseCreatureEntity
 
     float specialBoltTimer;
     enumShotType specialShots[SPECIAL_SHOT_SLOTS];
+	//enumMeleeType
     unsigned int specialShotLevel[SPECIAL_SHOT_SLOTS];
     int specialShotIndex;
     bool needInitShotType;
@@ -584,6 +599,7 @@ class PlayerEntity : public BaseCreatureEntity
     int collidingDirection;           /*!< Colliding direction (4, 8, 6, 2) to detect collision with closed doors */
 
     int firingDirection;
+	int stabbingDirection;
 
     int keyDirection;
 
