@@ -12,6 +12,8 @@ Change game sprites (School theme)
       Melee hitbox appears.
       Hitbox origin inflicts damage on enemies.
       Still need to imply the hitbox indicators to collide with enemies.
+      Bug occurs whenever the user reconfigures the melee key. On initial start up,
+            the meleeKey works.
       
 ~~implement corner shots (NE, NW, SE, SW)~~ Complete
       Weapon Upgrades that increases spread/amount of bolts
