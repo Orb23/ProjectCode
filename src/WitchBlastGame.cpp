@@ -1598,7 +1598,7 @@ void WitchBlastGame::updateRunningGame()
     }
 
 	// Key for the MeleeFunction
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
+	else if (isPressing(0, KeyMelee, false))
 	{
 		if (gameState == gameStatePlaying && isPressing(0, KeyMelee, true))
 			stabbingDirection = player->getFacingDirection();
