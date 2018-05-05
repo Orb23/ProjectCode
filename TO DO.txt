@@ -8,5 +8,11 @@ Change game sprites (School theme)
 ~~implement enemy to move and bounce around (of walls)~~
     Eyeball object already has this effect.
 
-implement melee
-implement corner shots (NE, NW, SE, SW)
+~~implement melee~~ 90%
+      Melee hitbox appears.
+      Hitbox origin inflicts damage on enemies.
+      Still need to imply the hitbox indicators to collide with enemies.
+      
+~~implement corner shots (NE, NW, SE, SW)~~ Complete
+      Weapon Upgrades that increases spread/amount of bolts
+            bugs out the corner shots.
