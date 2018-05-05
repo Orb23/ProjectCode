@@ -1,11 +1,10 @@
 #include "MeleeRuler.h"
+#include "ExplosionEntity.h"
 #include "Constants.h"
-#include "sfml_game\CollidingSpriteEntity.h"
-#include "WitchBlastGame.h"
 #include "DungeonMap.h"
-#include "sfml_game\ImageManager.h"
-#include "sfml_game\SoundManager.h"
-
+#include "WitchBlastGame.h"
+#include "sfml_game/ImageManager.h"
+#include "sfml_game/SoundManager.h"
 
 MeleeRuler::MeleeRuler(float x, float y, float RulerLifeTime, enumMeleeType Meleetype, int level,int direction)
 	: CollidingSpriteEntity(ImageManager::getInstance().getImage(IMAGE_RULER),x,y,RULER_WIDTH,RULER_HEIGHT)
@@ -266,10 +265,9 @@ void MeleeRuler::collide()
 	hitNumber++;
 	if (fromPlayer)
 	{
-		if (goThrough)
-		{
+
 			if (damages > 0) return;
-		}
+
 	}
 
 	isDying = true;

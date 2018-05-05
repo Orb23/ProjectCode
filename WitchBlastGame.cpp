@@ -4998,6 +4998,7 @@ void WitchBlastGame::initMonsterArray()
       monsterArray[i][j] = false;
 }
 
+//ADDS MONSTER INTO MAP/GAME
 void WitchBlastGame::addMonster(enemyTypeEnum monsterType, float xm, float ym)
 {
   StructMonster monster;
